@@ -6,18 +6,19 @@ class Station:
         self.idStation = idstation
         self.location = (location_x,location_y)
 
-def jsonStation(station : Station):
-    return {
-        'idStation' : station.idStation,
-        'location_x' : station.location[0],
-        'location_y' : station.location[1]
-    }
-
-def deserializeStation(received_json) -> Station:
-   idStation = received_json['idStation']
-   location_x = received_json['location_x']
-   location_y = received_json['location_y']
-   return Station(idStation,location_x,location_y)
+    def to_dict(self):
+        return {
+            'idStation' : self.idStation,
+            'location_x' : self.location[0],
+            'location_y' : self.location[1]
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        idStation = data['idStation']
+        location_x = data['location_x']
+        location_y = data['location_y']
+        return Station(idStation,location_x,location_y)
 
 def generateStation(idStation) -> Station:
     return Station(idStation,random.uniform(0,20), random.uniform(0,20))

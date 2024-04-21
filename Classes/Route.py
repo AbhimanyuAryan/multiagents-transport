@@ -2,23 +2,24 @@ import jsonpickle
 import Station
 import List
 
-from Station import jsonStation, deserializeStation, generateStation
+from Station import generateStation
 
 class Route:
     def __init__(self,idRoute : int, stations : List[Station]):
         self.idRoute = idRoute
         self.stations = stations
 
-def jsonRoute(route : Route):
-    return {
-        'idRoute' : route.idRoute,
-        'stations' : [jsonStation(s) for s in route.stations]
-    } 
-
-def deserializeRoute(received_json) -> Route:
-   idRoute = received_json['idRoute']
-   stations = received_json['stations']
-   return Route(idRoute,[deserializeStation(s) for s in stations])
+    def to_dict(self):
+        return {
+            'idRoute' : self.idRoute,
+            'stations' : [s.to_dict() for s in self.stations]
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        idRoute = data['idRoute']
+        stations = data['stations']
+        return Route(idRoute,[Station.from_dict(s) for s in stations])
 
 def generateRoute() -> Route:
     idRoute = 1
