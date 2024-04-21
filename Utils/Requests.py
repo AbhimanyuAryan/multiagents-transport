@@ -62,7 +62,7 @@ def serializeBusStart(receiver:str, bus : Bus, route : Route):
     # bus -> implement serializedBus
     performative = get_performative_confirm()
     serializedBus = ''
-    serializedRoute = Route.jsonRoute(route)
+    serializedRoute = route.to_dict()
     body = {
         'action' : 'start',
         'bus' : serializedBus,
@@ -74,7 +74,7 @@ def serializeBusEnd(receiver:str, bus : Bus, route : Route):
     # bus -> implement serializedBus
     performative = get_performative_confirm()
     serializedBus = ''
-    serializedRoute = Route.jsonRoute(route)
+    serializedRoute = route.to_dict()
     body = {
         'action' : 'end',
         'bus' : serializedBus,
