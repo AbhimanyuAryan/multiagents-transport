@@ -6,16 +6,14 @@ class Station:
         self.idStation = idstation
         self.location = (location_x,location_y)
 
-def serializeStation(station : Station):
-    send_json = {
+def jsonStation(station : Station):
+    return {
         'idStation' : station.idStation,
         'location_x' : station.location[0],
         'location_y' : station.location[1]
-    } 
-    return jsonpickle.encode(send_json)
+    }
 
-def deserializeStation(msg_body) -> Station:
-   received_json = jsonpickle.decode(msg_body)
+def deserializeStation(received_json) -> Station:
    idStation = received_json['idStation']
    location_x = received_json['location_x']
    location_y = received_json['location_y']
