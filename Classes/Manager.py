@@ -1,5 +1,5 @@
 import Route
-import Client
+import Classes.Passenger as Passenger
 import Bus
 import List
 
@@ -8,15 +8,15 @@ from Route import generateRoute
 class Manager:
     def __init__(self):
         self.buses = {}
-        self.clients = {}
+        self.passengers = {}
         route = generateRoute()
         self.routes = {route.idRoute : route}
 
     def add_bus(self,bus : Bus):
         self.buses[bus.idBus] = bus
 
-    def add_client(self,client : Client):
-        print("Manager: add_client to do")
+    def add_passenger(self,passenger : Passenger):
+        print("Manager: add_passenger to do")
 
     def add_route(self,route : Route):
         self.routes[route.idRoute] = route
@@ -27,8 +27,8 @@ class Manager:
         else:
             print(f'Bus {bus.idBus} does not exist')
 
-    def get_clients_bus(self, bus : Bus) -> List[Client]:
-        print("Manager: get_clients_bus to do")
+    def get_passengers_bus(self, bus : Bus) -> List[Passenger]:
+        print("Manager: get_passengers_bus to do")
         return []
     
     def route_needs_bus(self, route : Route):

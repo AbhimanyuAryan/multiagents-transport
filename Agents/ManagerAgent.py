@@ -7,7 +7,7 @@ from Behaviours.ManagerBehaviour import ManagerBehaviour
 import Utils.Requests as Requests
 from Classes.Manager import Manager
 from Classes.Bus import Bus
-from Classes.Client import Client
+from Classes.Passenger import Passenger
 from Classes.Route import Route
 from Classes.Station import Station
 
@@ -20,9 +20,9 @@ class ManagerAgent(Agent):
     def registerBus(self, bus : Bus):
         self.manager.add_bus(bus)
 
-    def registerClient(self, client : Client):
-        self.manager.add_client(client)
-        # see if there is more bus to the client route
+    def registerPassenger(self, passenger : Passenger):
+        self.manager.add_(passenger)
+        # see if there is more bus to the passenger route
 
     def setRouteBus(self, route : Route):
         print('Manager Agent: setRouteBus to do')
@@ -42,30 +42,30 @@ class ManagerAgent(Agent):
         # set running = false
         return 0
     
-    def clientEntered(self, client : Client , bus : Bus):
-        print('Manager Agent: clientEntered to do')
+    def passengerEntered(self, passenger : Passenger , bus : Bus):
+        print('Manager Agent: passengerEntered to do')
         # notify the bus new passenger
         # increase the number of passengers at the bus
         # set bus at the passenger
         return 0
     
-    def clientLeft(self, client : Client , bus : Bus):
-        print('Manager Agent: clientLeft to do')
+    def passengerLeft(self, passenger : Passenger , bus : Bus):
+        print('Manager Agent: passengerLeft to do')
         # notify the bus one passenger left
         # decrease the number of passengers at the bus
         # remove bus at the passenger
         return 0
 
-    def notifyBusLocation(self,clients : List[Client], bus : Bus) :
-        # send a message to all the clients of the new bus location
+    def notifyBusLocation(self,passengers : List[Passenger], bus : Bus) :
+        # send a message to all the passengers of the new bus location
         print('Manager Agent: notifyBusLocation to do')
         return 0
     
     def updateBusLocation(self,bus : Bus):
-        # finish get_clients_bus
+        # finish get_passengers_bus
         print('Manager Agent: notifyBusLocation to do')
         self.manager.update_bus_location(bus)
-        passenger_to_notify = self.manager.get_clients_bus(bus)
+        passenger_to_notify = self.manager.get_passengers_bus(bus)
         self.notifyBusLocation(passenger_to_notify,bus)
         return 0
     
@@ -73,9 +73,9 @@ class ManagerAgent(Agent):
         performative, body = Requests.read_message(msg)
         print(f"Manager Agent: New Message with the performative {performative}")
         if performative == Requests.get_performative_subscribe():
-            if body['type'] == 'Client':
-                print(f'Manager Agent: New Client to do')
-                # self.registerClient(client)
+            if body['type'] == 'Passenger':
+                print(f'Manager Agent: New Passenger to do')
+                # self.registerPassenger(passenger)
             elif body['type'] == 'Bus':
                 print(f'Manager Agent: New Bus to do')
                 # self.registerBus(bus)
@@ -89,11 +89,11 @@ class ManagerAgent(Agent):
         elif performative == Requests.get_performative_inform():
             if body['type'] == 'passenger':
                 if body['action'] == 'enter':
-                    print(f'Manager Agent: Client entered to do')
-                    # self.clientEntered(client, bus)
+                    print(f'Manager Agent: Passenger entered to do')
+                    # self.passengerEntered(passenger, bus)
                 elif body['action'] == 'left':
-                    print(f'Manager Agent: Client left to do')
-                    # self.clientLeft(client, bus)
+                    print(f'Manager Agent: Passenger left to do')
+                    # self.passengerLeft(passenger, bus)
             elif body['type'] == 'bus':
                 print('Manager Agent: New Bus Location to do')
                 # self.updateBusLocation(bus)
