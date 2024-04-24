@@ -4,6 +4,9 @@ import jsonpickle
 import threading
 import List
 from Behaviours.ManagerBehaviour import ManagerBehaviour
+from Behaviours.NotifyPassenger import NotifyPassengerBehaviour
+from Behaviours.NotifyBusPassenger import NotifyBusPassengerBehaviour
+from Behaviours.NotifyBusRoute import NotifyBusRouteBehaviour
 import Utils.Requests as Requests
 from Classes.Manager import Manager
 from Classes.Bus import Bus
@@ -21,48 +24,49 @@ class ManagerAgent(Agent):
         self.manager.add_bus(bus)
 
     def registerPassenger(self, passenger : Passenger):
-        self.manager.add_(passenger)
-        # see if there is more bus to the passenger route
+        self.manager.add_passenger(passenger)
+        if self.manager.route_needs_bus(passenger.route):
+            self.setRouteBus(passenger.route)
 
     def setRouteBus(self, route : Route):
-        print('Manager Agent: setRouteBus to do')
-        # set the route at the bus
-        # send a message to the bus
+        print('Manager Agent: setRouteBus')
+        bus = self.manager.pick_random_bus_available()
+        b = NotifyBusRouteBehaviour(bus,route)
+        self.add_behaviour(b)
         return 0
 
     def busStarted(self, bus : Bus , route : Route):
-        print('Manager Agent: busStarted to do')
-        # set the route at the bus
-        # set running = true
+        print('Manager Agent: busStarted')
+        self.manager.busStarted(bus, route)
         return 0
     
     def busEnded(self, bus : Bus , route : Route):
-        print('Manager Agent: busEnded to do')
-        # remove the route from the bus
-        # set running = false
+        print('Manager Agent: busEnded')
+        self.manager.busEnded(bus)
         return 0
     
     def passengerEntered(self, passenger : Passenger , bus : Bus):
         print('Manager Agent: passengerEntered to do')
-        # notify the bus new passenger
-        # increase the number of passengers at the bus
-        # set bus at the passenger
+        self.manager.passenger_entered(passenger,bus)
+        b = NotifyBusPassengerBehaviour(bus,True)
+        self.add_behaviour(b)
         return 0
     
     def passengerLeft(self, passenger : Passenger , bus : Bus):
         print('Manager Agent: passengerLeft to do')
-        # notify the bus one passenger left
-        # decrease the number of passengers at the bus
-        # remove bus at the passenger
+        self.manager.passenger_left(passenger,bus)
+        b = NotifyBusPassengerBehaviour(bus,False)
+        self.add_behaviour(b)
         return 0
 
     def notifyBusLocation(self,passengers : List[Passenger], bus : Bus) :
-        # send a message to all the passengers of the new bus location
-        print('Manager Agent: notifyBusLocation to do')
+        print('Manager Agent: notifyBusLocation')
+        for p in passengers:
+            b = NotifyPassengerBehaviour(p,bus)
+            self.add_behaviour(b)
         return 0
     
     def updateBusLocation(self,bus : Bus):
-        # finish get_passengers_bus
         print('Manager Agent: notifyBusLocation to do')
         self.manager.update_bus_location(bus)
         passenger_to_notify = self.manager.get_passengers_bus(bus)
@@ -74,27 +78,34 @@ class ManagerAgent(Agent):
         print(f"Manager Agent: New Message with the performative {performative}")
         if performative == Requests.get_performative_subscribe():
             if body['type'] == 'Passenger':
-                print(f'Manager Agent: New Passenger to do')
-                # self.registerPassenger(passenger)
+                print(f'Manager Agent: New Passenger')
+                passenger = Passenger.from_dict(body['data'])
+                self.registerPassenger(passenger)
             elif body['type'] == 'Bus':
-                print(f'Manager Agent: New Bus to do')
-                # self.registerBus(bus)
+                print(f'Manager Agent: New Bus')
+                bus = Bus.from_dict(body['data'])
+                self.registerBus(bus)
         elif performative == Requests.get_performative_confirm():
+            bus = Bus.from_dict(body['bus'])
+            route = Route.from_dict(body['route'])
             if body['action'] == 'start':
-                print(f'Manager Agent: Bus started to do')
-                # self.busStarted(bus,route)
+                print(f'Manager Agent: Bus started')
+                self.busStarted(bus,route)
             elif body['action'] == 'end':
-                print(f'Manager Agent: Bus ended to do')
-                # self.busEnded(bus,route)
+                print(f'Manager Agent: Bus ended')
+                self.busEnded(bus,route)
         elif performative == Requests.get_performative_inform():
-            if body['type'] == 'passenger':
+            if body['type'] == 'Passenger':
+                bus = Bus.from_dict(body['bus'])
+                passenger = Passenger.from_dict(body['passenger'])
                 if body['action'] == 'enter':
-                    print(f'Manager Agent: Passenger entered to do')
-                    # self.passengerEntered(passenger, bus)
+                    print(f'Manager Agent: Passenger entered')
+                    self.passengerEntered(passenger, bus)
                 elif body['action'] == 'left':
-                    print(f'Manager Agent: Passenger left to do')
-                    # self.passengerLeft(passenger, bus)
-            elif body['type'] == 'bus':
-                print('Manager Agent: New Bus Location to do')
-                # self.updateBusLocation(bus)
+                    print(f'Manager Agent: Passenger left')
+                    self.passengerLeft(passenger, bus)
+            elif body['type'] == 'Bus':
+                bus = Bus.from_dict(body['bus'])
+                print('Manager Agent: New Bus Location')
+                self.updateBusLocation(bus)
         return 0
