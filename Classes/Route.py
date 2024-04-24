@@ -20,6 +20,10 @@ class Route:
         idRoute = data['idRoute']
         stations = data['stations']
         return Route(idRoute,[Station.from_dict(s) for s in stations])
+    
+    def hasStation(self,station : Station):
+        ids = [s.idStation for s in self.stations]
+        return station.idStation in ids
 
 def generateRoute() -> Route:
     idRoute = 1
