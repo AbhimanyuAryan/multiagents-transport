@@ -2,6 +2,7 @@ from spade.message import Message
 import Client
 import Bus
 import jsonpickle
+import Classes.Route as Route
 import json
 
 # The main goal of this file is to centralize the process of creating messages
@@ -11,6 +12,11 @@ import json
 def get_performative_subscribe():
     return 'subscribe'
 
+def get_performative_confirm():
+    return 'confirm'
+
+def get_performative_inform():
+    return 'inform'
 
 # returns the server saved on the file Data/util.json
 def get_server():
@@ -51,3 +57,70 @@ def serializeRegisterBus(receiver:str, bus : Bus):
         'data' : serializedBus
     }
     return message_builder(receiver,performative,body)
+
+def serializeBusStart(receiver:str, bus : Bus, route : Route):
+    # bus -> implement serializedBus
+    performative = get_performative_confirm()
+    serializedBus = ''
+    serializedRoute = route.to_dict()
+    body = {
+        'action' : 'start',
+        'bus' : serializedBus,
+        'route' : serializedRoute
+    }
+    return message_builder(receiver,performative,body)
+    
+def serializeBusEnd(receiver:str, bus : Bus, route : Route):
+    # bus -> implement serializedBus
+    performative = get_performative_confirm()
+    serializedBus = ''
+    serializedRoute = route.to_dict()
+    body = {
+        'action' : 'end',
+        'bus' : serializedBus,
+        'route' : serializedRoute
+    }
+    return message_builder(receiver,performative,body)
+
+def serializePassengerEntered(receiver:str, passenger : Client, bus : Bus):
+    # bus -> implement serializedBus
+    # client -> implement serializeClient
+    performative = get_performative_inform()
+    serializedBus = ''
+    serializePassenger = ''
+    body = {
+        'type' : 'passenger',
+        'action' : 'enter',
+        'bus' : serializedBus,
+        'passenger' : serializePassenger
+    }
+    return message_builder(receiver,performative,body)
+    
+def serializePassengerLeft(receiver:str, passenger : Client, bus : Bus):
+    # bus -> implement serializedBus
+    # client -> implement serializeClient
+    performative = get_performative_inform()
+    serializedBus = ''
+    serializePassenger = ''
+    body = {
+        'type' : 'passenger',
+        'action' : 'left',
+        'bus' : serializedBus,
+        'passenger' : serializePassenger
+    }
+    return message_builder(receiver,performative,body)
+
+
+def serializeBusNewLocation(receiver:str, bus : Bus):
+    # bus -> implement serializedBus
+    performative = get_performative_confirm()
+    serializedBus = ''
+    body = {
+        'type' : 'bus',
+        'action' : 'new_location',
+        'bus' : serializedBus
+    }
+    return message_builder(receiver,performative,body)
+
+def read_message(msg):
+    return msg.get_metadata('performative'), jsonpickle.decode(msg.body)
