@@ -33,11 +33,14 @@ def get_server():
 def message_builder(receiver : str, performative : str, body):
     server = get_server()
     msg = Message(to=f'{receiver}@{server}')
-    msg.set_metadata("perfomative",performative)
+    msg.set_metadata("performative",performative)
     msg.set_metadata("ontology","myOntology")
     msg.set_metadata("language","OWL-S")
     msg.body = jsonpickle.encode(body)
     return msg
+
+def read_message(msg):
+    return msg.get_metadata('performative'), jsonpickle.decode(msg.body)
     
 # An example of a function that creates a message to register a passenger in the manager
 def serializeRegisterPassenger(receiver:str, passenger : Passenger):
@@ -48,6 +51,7 @@ def serializeRegisterPassenger(receiver:str, passenger : Passenger):
         'type' : 'Passenger',
         'data' : serializedPassenger
     }
+    print(performative)
     return message_builder(receiver,performative,body)
 
 # An example of a function that creates a message to register a bus in the manager
@@ -124,9 +128,6 @@ def serializeBusNewLocation(receiver:str, bus : Bus):
         'bus' : serializedBus
     }
     return message_builder(receiver,performative,body)
-
-def read_message(msg):
-    return msg.get_metadata('performative'), jsonpickle.decode(msg.body)
 
 def serializeNotifyPassenger(receiver:str, bus : Bus):
     performative = get_performative_inform()

@@ -1,8 +1,4 @@
 from spade.agent import Agent
-from spade.message import Message
-import jsonpickle
-import threading
-import List
 from Behaviours.ManagerBehaviour import ManagerBehaviour
 from Behaviours.NotifyPassenger import NotifyPassengerBehaviour
 from Behaviours.NotifyBusPassenger import NotifyBusPassengerBehaviour
@@ -12,7 +8,7 @@ from Classes.Manager import Manager
 from Classes.Bus import Bus
 from Classes.Passenger import Passenger
 from Classes.Route import Route
-from Classes.Station import Station
+from typing import List
 
 class ManagerAgent(Agent):
     async def setup(self):
@@ -21,9 +17,11 @@ class ManagerAgent(Agent):
         self.manager : Manager = Manager()
 
     def registerBus(self, bus : Bus):
+        print(f'Manager Agent: New Bus')
         self.manager.add_bus(bus)
 
     def registerPassenger(self, passenger : Passenger):
+        print(f'Manager Agent: New Passenger')
         self.manager.add_passenger(passenger)
         if self.manager.route_needs_bus(passenger.route):
             self.setRouteBus(passenger.route)
@@ -31,8 +29,11 @@ class ManagerAgent(Agent):
     def setRouteBus(self, route : Route):
         print('Manager Agent: setRouteBus')
         bus = self.manager.pick_random_bus_available()
-        b = NotifyBusRouteBehaviour(bus,route)
-        self.add_behaviour(b)
+        if(bus != None):
+            b = NotifyBusRouteBehaviour(bus,route)
+            self.add_behaviour(b)
+        else:
+            print('Manager Agent: There are no Buses Available. Please add more buses.')
         return 0
 
     def busStarted(self, bus : Bus , route : Route):

@@ -1,5 +1,4 @@
 from spade.behaviour import CyclicBehaviour
-from spade.message import Message
 from Utils.Requests import serializeRegisterPassenger
 
 class PassengerBehaviour(CyclicBehaviour):

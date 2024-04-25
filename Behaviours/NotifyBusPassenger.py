@@ -1,5 +1,4 @@
 from spade.behaviour import OneShotBehaviour
-from Classes.Passenger import Passenger
 from Classes.Bus import Bus
 from Utils.Requests import serializeNotifyBusNewPassenger, serializeNotifyBusPassengerLeft
 
@@ -9,7 +8,7 @@ class NotifyBusPassengerBehaviour(OneShotBehaviour):
         self.bus = bus
         self.passenger_new = passenger_new
     async def run(self):
-        receiver = str(self.bus.idBus)
+        receiver = f'bus{self.bus.idBus}'
         if(self.passenger_new):
             p = 'entered'
             msg = serializeNotifyBusNewPassenger(receiver,self.bus)

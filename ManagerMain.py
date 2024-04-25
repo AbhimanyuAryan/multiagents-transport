@@ -1,8 +1,10 @@
 from Agents.ManagerAgent import ManagerAgent
 import time
 from Utils import Requests
+import random
 
 def receiver(server):
+    random.seed(20)
     agent = ManagerAgent(f"manager@{server}","password")
     future = agent.start()
     future.result()

@@ -11,17 +11,24 @@ class Passenger:
         self.initialStation = initialStation
 
     def to_dict(self):
+        if self.bus != None:
+            value = self.bus.to_dict()
+        else:
+            value = None
         return {
             'idPassenger': self.idPassenger,
-            'route': self.route,
-            'bus': self.bus,
-            'initialStation':self.initialStation,
+            'route': self.route.to_dict(),
+            'bus':value,
+            'initialStation':self.initialStation.to_dict(),
         }
     
     @classmethod
     def from_dict(cls,data):
         idPassenger = data['idPassenger']
-        route = data['route']
-        bus = data['bus']
-        initialStation = data['initialStation']
+        route = Route.from_dict(data['route'])
+        if data['bus'] != None:
+            bus = Bus.from_dict(data['bus'])
+        else:
+            bus = None
+        initialStation = Station.from_dict(data['initialStation'])
         return Passenger(idPassenger,route,bus,initialStation)

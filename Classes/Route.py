@@ -1,8 +1,5 @@
-import jsonpickle
-import Station
-import List
-
-from Station import generateStation
+from Classes.Station import Station, generateStation
+from typing import List
 
 class Route:
     def __init__(self,idRoute : int, stations : List[Station]):

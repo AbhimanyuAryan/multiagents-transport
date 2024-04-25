@@ -1,5 +1,4 @@
 from spade.behaviour import OneShotBehaviour
-from Classes.Bus import Bus
 from Utils.Requests import serializeBusStart
 
 class NotifyManagerBusStarted(OneShotBehaviour):

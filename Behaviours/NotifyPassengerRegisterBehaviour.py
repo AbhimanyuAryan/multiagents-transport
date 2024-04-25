@@ -1,6 +1,5 @@
 from spade.behaviour import OneShotBehaviour
 from Classes.Passenger import Passenger
-from Classes.Manager import Manager
 from Utils.Requests import serializeRegisterPassenger
 
 class NotifyPassengerRegisterBehaviour(OneShotBehaviour):

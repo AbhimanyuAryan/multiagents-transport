@@ -1,11 +1,8 @@
 from spade.agent import Agent
-from spade.message import Message
 from Behaviours.BusBehaviour import BusBehaviour
 from Behaviours.CurrentBusLocationUpdate import CurrentBusLocationUpdate
 from Behaviours.NotifyManagerBusEnded import NotifyManagerBusEnd
 from Behaviours.NotifyManagerBusStarted import NotifyManagerBusStarted
-from Behaviours.NotifyPassengerLeft import NotifyPassengerLeftBehaviour
-from Behaviours.NotifyPassengerEntered import NotifyPassengerEnteredBehaviour
 from Behaviours.UpdateBusLocation import UpdateBusLocation
 from Classes.Bus import Bus
 from Classes.Route import Route
@@ -14,13 +11,14 @@ from Classes.Station import Station
 from Utils import Requests
 
 class BusAgent(Agent):
+    def __init__(self,sender,password,bus : Bus):
+        super().__init__(sender,password)
+        self.bus = bus
+
     async def setup(self):
         self.behaviour = BusBehaviour()
         self.add_behaviour(self.behaviour)
     
-    def createBus(self, idBus: int, capacity: int, route: Route, current_station: Station):
-        self.bus = Bus(idBus, capacity, route, current_station)
-
     def startBus(self):
         print('Bus Agent: startBus')
         self.bus.running = True

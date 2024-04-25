@@ -1,5 +1,4 @@
 from spade.agent import Agent
-from spade.message import Message
 from Behaviours.EnterBusBehaviour import EnterBusBehaviour
 from Behaviours.LeftBusBehaviour import LeftBusBehaviour
 from Behaviours.NotifyPassengerRegisterBehaviour import NotifyPassengerRegisterBehaviour
@@ -11,13 +10,13 @@ from Classes.Station import Station
 from Utils import Requests
 
 class PassengerAgent(Agent):
+    def __init__(self,sender,password, passenger: Passenger):
+        super().__init__(sender,password)
+        self.passenger = passenger
     async def setup(self):
         self.behaviour = PassengerBehaviour()
         self.add_behaviour(self.behaviour)
         self.insideBus = False
-    
-    def createPassenger(self, idPassenger:int, route:Route, initialStation:Station):
-        self.passenger = Passenger(idPassenger,route, None, initialStation)
 
     def registerPassenger(self, passenger:Passenger):
         print('Client Agent: registerPassenger')

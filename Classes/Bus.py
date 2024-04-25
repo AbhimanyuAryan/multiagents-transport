@@ -1,5 +1,4 @@
 from Classes.Route import Route
-from Classes.Passenger import Passenger
 from Classes.Station import Station
 
 class Bus:
@@ -12,6 +11,7 @@ class Bus:
         self.running = False
 
     def to_dict(self):
+        # if self.route
         return {
             'idBus': self.idBus,
             'capacity': self.capacity,
