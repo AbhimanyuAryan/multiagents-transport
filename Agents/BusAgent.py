@@ -21,13 +21,13 @@ class BusAgent(Agent):
         print('Bus Agent: startBus')
         self.bus.running = True
         # Object should contain the route
-        # Oneshot behaviour to notify Manager
+        # Oneshot behaviour to notify Manager, something like leftbusbehaviour
 
     def endBus(self):
         print('Bus Agent: endBus')
         self.bus.running = False
         # Object should contain the route
-        # Oneshot behaviour to notify Manager
+        # Oneshot behaviour to notify Manager, something like leftbusbehaviour
 
     def passengerEntered(self, passenger: Passenger):
         print('Bus Agent: passengerEntered')
@@ -39,6 +39,7 @@ class BusAgent(Agent):
         # route has list of station
         # if statusBus == true
         # increment the route.station index in list in a thread 
+        # if station is last -> self.endBus()
 
     def passengerLeft(self, passenger: Passenger):
         print('Bus Agent: passengerLeft')
@@ -47,19 +48,21 @@ class BusAgent(Agent):
     # Manager gives route to the bus
     def setRoute(self, route: Route):
         self.bus.route = route
+        self.startBus()
 
     def receivedMessage(self, msg):
         performative, body = Requests.read_message(msg)
         print(f"Bus Agent #{self.bus.idBus}: New Message with the performative {performative}.")
         if performative == Requests.get_performative_request():
-            # pass itself is assigned to route
+            route = Route.from_dict(body['route'])
+            self.setRoute(route)
         elif performative == Requests.get_performative_inform():
             if body['type'] == 'passenger':
                 action = body['action']
-                if action == 'enter':
+                if action == '+':
                     print(f'Bus Agent: Received notification that a passenger entered.')
                     self.passengerEntered(Passenger.from_dict(body['passenger']))
-                elif action == 'left':
+                elif action == '-':
                     print(f'Bus Agent: Received notification that a passenger left.')
                     self.passengerLeft(Passenger.from_dict(body['passenger']))
         return 0
