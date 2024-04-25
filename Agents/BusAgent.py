@@ -51,13 +51,8 @@ class BusAgent(Agent):
     def receivedMessage(self, msg):
         performative, body = Requests.read_message(msg)
         print(f"Bus Agent #{self.bus.idBus}: New Message with the performative {performative}.")
-        if performative == Requests.get_performative_confirm():
-            if body['action'] == 'start':
-                print(f'Bus Agent: Received start signal.')
-                self.startBus()
-            elif body['action'] == 'end':
-                print(f'Bus Agent: Received end signal.')
-                self.endBus()
+        if performative == Requests.get_performative_request():
+            # pass itself is assigned to route
         elif performative == Requests.get_performative_inform():
             if body['type'] == 'passenger':
                 action = body['action']
