@@ -14,6 +14,7 @@ class PassengerAgent(Agent):
     async def setup(self):
         self.behaviour = PassengerBehaviour()
         self.add_behaviour(self.behaviour)
+        self.insideBus = False
     
     def createPassenger(self, idPassenger:int, route:Route, initialStation:Station):
         self.passenger = Passenger(idPassenger,route, None, initialStation)
@@ -42,7 +43,11 @@ class PassengerAgent(Agent):
         print('Client Agent: recieveBus')
         if bus.location == self.passenger.initialStation.location:
             print("Bus is in the same station as the passenger.")
+            self.insideBus = True
             self.enterBus(self.passenger,bus)
+        elif self.insideBus:
+            self.leftBus()
+            self.insideBus = False
         else:
             print("Bus is not in the same station as the passenger.")
 
