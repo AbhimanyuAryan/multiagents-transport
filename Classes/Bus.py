@@ -1,28 +1,32 @@
-import Route
+from Classes.Route import Route
+from Classes.Passenger import Passenger
+from Classes.Station import Station
 
 class Bus:
-    def __init__(self, idBus: int, route: Route, location: tuple, running: bool):
+    def __init__(self, idBus: int, capacity: int, route: Route, current_station: Station):
         self.idBus = idBus
+        self.capacity = capacity
         self.route = route
-        self.location = location
-        self.running = running
+        self.current_station = current_station
+        self.passengers = []
+        self.running = False
 
-    def register_bus(self, bus):
-        # Implement bus registration logic here
-        pass
+    def to_dict(self):
+        return {
+            'idBus': self.idBus,
+            'capacity': self.capacity,
+            'route': self.route.to_dict(),
+            'current_station': self.current_station.to_dict(),
+            'running': self.running
+        }
 
-    def set_route(self, route):
-        # Implement route setting logic here
-        pass
-
-    def starting_route(self, route):
-        # Implement starting route logic here
-        pass
-
-    def end_route(self, route):
-        # Implement ending route logic here
-        pass
-
-    def update_location(self, location):
-        # Implement location update logic here
-        pass
+    @classmethod
+    def from_dict(cls, data):
+        idBus = data['idBus']
+        capacity = data['capacity']
+        route = Route.from_dict(data['route'])
+        current_station = Station.from_dict(data['current_station'])
+        running = data['running']
+        bus = cls(idBus, capacity, route, current_station)
+        bus.running = running
+        return bus

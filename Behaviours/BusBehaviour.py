@@ -1,11 +1,14 @@
-from spade.behaviour import OneShotBehaviour
+from spade.behaviour import CyclicBehaviour
 from spade.message import Message
 
-class BusBehaviour(OneShotBehaviour):
-    async def run(self):
-        print(f"{self.agent.jid}: Bus behavior is running!")
+from Utils.Requests import serializeRegisterBus
 
-        # Example: Sending a message to the manager
-        msg = Message(to="manager@localhost")  # Assuming the manager's JID is "manager@localhost"
-        msg.body = "Hello from the bus!"
-        await self.send(msg)
+class BusBehaviour(CyclicBehaviour):
+    async def run(self):
+        print("Bus Cycle Behaviour up")
+        message = serializeRegisterBus('manager',self.agent.bus)
+        await self.send(message)
+        while True:
+            msg = await self.receive(timeout=10)
+            if msg:
+                await self.agent.receivedMessage(msg)
