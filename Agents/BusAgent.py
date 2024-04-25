@@ -1,8 +1,12 @@
 from spade.agent import Agent
 from spade.message import Message
 from Behaviours.BusBehaviour import BusBehaviour
+from Behaviours.CurrentBusLocationUpdate import CurrentBusLocationUpdate
+from Behaviours.NotifyManagerBusEnded import NotifyManagerBusEnd
+from Behaviours.NotifyManagerBusStarted import NotifyManagerBusStarted
 from Behaviours.NotifyPassengerLeft import NotifyPassengerLeftBehaviour
 from Behaviours.NotifyPassengerEntered import NotifyPassengerEnteredBehaviour
+from Behaviours.UpdateBusLocation import UpdateBusLocation
 from Classes.Bus import Bus
 from Classes.Route import Route
 from Classes.Passenger import Passenger
@@ -20,26 +24,30 @@ class BusAgent(Agent):
     def startBus(self):
         print('Bus Agent: startBus')
         self.bus.running = True
-        # Object should contain the route
-        # Oneshot behaviour to notify Manager, something like leftbusbehaviour
-
+        self.add_behaviour(UpdateBusLocation())
+        self.add_beahviour(NotifyManagerBusStarted())
+        
     def endBus(self):
         print('Bus Agent: endBus')
         self.bus.running = False
-        # Object should contain the route
-        # Oneshot behaviour to notify Manager, something like leftbusbehaviour
+        self.add_behaviour(NotifyManagerBusEnd())
 
     def passengerEntered(self, passenger: Passenger):
         print('Bus Agent: passengerEntered')
         self.bus.passengers.append(passenger)
 
     def updateLocation(self):
-        # every 5 second update the location in a thread
-        print('Bus Agent: updateLocation')
-        # route has list of station
-        # if statusBus == true
-        # increment the route.station index in list in a thread 
-        # if station is last -> self.endBus()
+        route = self.bus.route
+        current_station_index = route.stations.index(self.bus.current_station)
+        next_station_index = current_station_index + 1
+        if next_station_index < len(route.stations):
+            self.add_behaviour(CurrentBusLocationUpdate())
+            self.bus.current_station = route.stations[next_station_index]
+            return True
+        else:
+            print("Bus reached the last station.")
+            self.endBus()
+            return False
 
     def passengerLeft(self, passenger: Passenger):
         print('Bus Agent: passengerLeft')
