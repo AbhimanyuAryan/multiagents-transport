@@ -20,28 +20,33 @@ class BusAgent(Agent):
     def startBus(self):
         print('Bus Agent: startBus')
         self.bus.running = True
+        # Object should contain the route
+        # Oneshot behaviour to notify Manager
 
     def endBus(self):
         print('Bus Agent: endBus')
         self.bus.running = False
+        # Object should contain the route
+        # Oneshot behaviour to notify Manager
 
     def passengerEntered(self, passenger: Passenger):
         print('Bus Agent: passengerEntered')
         self.bus.passengers.append(passenger)
 
+    def updateLocation(self):
+        # every 5 second update the location in a thread
+        print('Bus Agent: updateLocation')
+        # route has list of station
+        # if statusBus == true
+        # increment the route.station index in list in a thread 
+
     def passengerLeft(self, passenger: Passenger):
         print('Bus Agent: passengerLeft')
         self.bus.passengers.remove(passenger)
 
-    def notifyPassengerLeft(self):
-        print('Bus Agent: notifyPassengerLeft')
-        b = NotifyPassengerLeftBehaviour(self.bus.passengers)
-        self.add_behaviour(b)
-
-    def notifyPassengerEntered(self):
-        print('Bus Agent: notifyPassengerEntered')
-        b = NotifyPassengerEnteredBehaviour(self.bus.passengers)
-        self.add_behaviour(b)
+    # Manager gives route to the bus
+    def setRoute(self, route: Route):
+        self.bus.route = route
 
     def receivedMessage(self, msg):
         performative, body = Requests.read_message(msg)
