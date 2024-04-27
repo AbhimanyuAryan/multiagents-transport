@@ -4,7 +4,6 @@ from Utils.MessageBuilder import get_server
 import random
 
 def receiver(server):
-    random.seed(20)
     agent = ManagerAgent(f"manager@{server}","password")
     future = agent.start()
     future.result()

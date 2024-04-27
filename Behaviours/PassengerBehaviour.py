@@ -3,7 +3,7 @@ from Utils.Requests import serializeRegisterPassenger
 
 class PassengerBehaviour(CyclicBehaviour):
     async def run(self):
-        print("Passenger Cycle Behaviour up")
+        print(f"Passenger {self.agent.passenger.idPassenger}: Passenger Cycle Behaviour up")
         message = serializeRegisterPassenger('manager',self.agent.passenger)
         await self.send(message)
         while True:

@@ -9,4 +9,3 @@ class NotifyPassengerRegisterBehaviour(OneShotBehaviour):
     async def run(self):
         message = serializeRegisterPassenger("manager",self.passenger)
         await self.send(message)
-        print(f"Manager was notified of the registry of passeger {self.passenger.idPassenger}.")

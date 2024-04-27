@@ -12,4 +12,3 @@ class NotifyBusRouteBehaviour(OneShotBehaviour):
         receiver = f'bus{self.bus.idBus}'
         msg = serializeNotifyBusRoute(receiver,self.route)
         await self.send(msg)
-        print(f"Bus {receiver} was notified to request a new route")

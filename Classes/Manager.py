@@ -32,9 +32,9 @@ class Manager:
     
     def route_needs_bus(self, route : Route):
         buses_in_route = list(filter(lambda bus : bus.running and bus.route.idRoute == route.idRoute,self.buses.values()))
-        buses_80_per = list(filter(lambda bus : bus.capacity > 80, buses_in_route))
+        buses_80_per = list(filter(lambda bus : bus.get_occupancy(), buses_in_route))
         passenger_at_route = list(filter(lambda passenger : route.idRoute == passenger.route.idRoute,self.passengers.values()))
-        return len(buses_80_per) > len(buses_in_route) - 2 or len(passenger_at_route) > 40 
+        return len(buses_in_route) == 0 or (len(buses_80_per) == len(buses_in_route) and len(passenger_at_route) > 40)
 
     def passenger_entered(self, passenger : Passenger, bus : Bus):
         self.buses[bus.idBus].add_passenger()
@@ -48,7 +48,7 @@ class Manager:
         self.buses[bus.idBus].reset()
         for p in self.passengers.values():
             if p.bus != None and p.bus.idBus == bus.idBus:
-                p.leave_bus()
+                p.leave_bus(bus)
 
     def busStarted(self, bus : Bus, route : Route):
         self.buses[bus.idBus].route = route

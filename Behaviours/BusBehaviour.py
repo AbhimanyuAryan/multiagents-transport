@@ -4,7 +4,7 @@ from Utils.Requests import serializeRegisterBus
 
 class BusBehaviour(CyclicBehaviour):
     async def run(self):
-        print("Bus Cycle Behaviour up")
+        print(f"Bus {self.agent.bus.idBus} Agent: Bus Cycle Behaviour up")
         message = serializeRegisterBus('manager',self.agent.bus)
         await self.send(message)
         while True:

@@ -20,22 +20,22 @@ class BusAgent(Agent):
         self.add_behaviour(self.behaviour)
     
     def startBus(self):
-        print('Bus Agent: startBus')
+        print(f'Bus Agent {self.bus.idBus}: Starting the bus')
         self.bus.running = True
         self.add_behaviour(UpdateBusLocation(period=5))
         self.add_behaviour(NotifyManagerBusStarted())
         
     def endBus(self):
-        print('Bus Agent: endBus')
+        print(f'Bus Agent {self.bus.idBus}: Ending route')
         self.add_behaviour(NotifyManagerBusEnd())
 
     def passengerEntered(self):
         self.bus.add_passenger()
-        print(f'Bus Agent: passengerEntered {self.bus.passengers}')
+        print(f'Bus Agent {self.bus.idBus}: New Passenger {self.bus.passengers}')
 
     def passengerLeft(self):
         self.bus.remove_passenger()
-        print(f'Bus Agent: passengerEntered {self.bus.passengers}')
+        print(f'Bus Agent {self.bus.idBus}: Passenger Left {self.bus.passengers}')
 
     def updateLocation(self):
         route = self.bus.route
@@ -43,12 +43,12 @@ class BusAgent(Agent):
             current_station_index = route.stations.index(self.bus.current_station)
             next_station_index = current_station_index + 1
             if next_station_index < len(route.stations):
-                print('Bus Agent: New location: ', route.stations[next_station_index].location)
+                print(f'Bus Agent {self.bus.idBus}: New location', route.stations[next_station_index].location)
                 self.add_behaviour(CurrentBusLocationUpdate())
                 self.bus.current_station = route.stations[next_station_index]
                 return True
             else:
-                print("Bus reached the last station.")
+                print(f"Bus Agent {self.bus.idBus}: Bus reached the last station.")
                 self.endBus()
                 return False
 
@@ -60,18 +60,18 @@ class BusAgent(Agent):
 
     def receivedMessage(self, msg):
         performative, body = MessageBuilder.read_message(msg)
-        print(f"Bus Agent #{self.bus.idBus}: New Message with the performative {performative}.")
+        # print(f"Bus Agent {self.bus.idBus}: New Message with the performative {performative}.")
         if performative == Performative.request():
-            print("Bus Agent: New route")
+            print(f"Bus Agent {self.bus.idBus}: New route")
             route = Route.from_dict(body['route'])
             self.setRoute(route)
         elif performative == Performative.inform():
             if body['type'] == 'notification':
                 action = body['action']
                 if action == '+':
-                    print(f'Bus Agent: Received notification that a passenger entered.')
                     self.passengerEntered()
                 elif action == '-':
-                    print(f'Bus Agent: Received notification that a passenger left.')
                     self.passengerLeft()
+        else:
+            print(f"Bus Agent {self.bus.idBus}: Performative {performative} not supported")
         return 0

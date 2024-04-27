@@ -10,7 +10,5 @@ class EnterBusBehaviour(OneShotBehaviour):
         self.bus = bus
 
     async def run(self):
-        sender = str(self.passenger.idPassenger)
         msg = serializePassengerEntered("manager",self.passenger,self.bus)
         await self.send(msg)
-        print(f"Passenger {sender} notified manager of their intent to enter a bus.")

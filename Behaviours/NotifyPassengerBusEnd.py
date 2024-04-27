@@ -12,4 +12,3 @@ class NotifyPassengerBusEndBehaviour(OneShotBehaviour):
         receiver = f'passenger{self.passenger.idPassenger}'
         msg = serializeNotifyPassengerBusEnd(receiver,self.bus)
         await self.send(msg)
-        print(f"Passenger {receiver} was notified with a that the {self.bus} has finished")

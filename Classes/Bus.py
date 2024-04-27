@@ -58,3 +58,6 @@ class Bus:
         self.passengers = 0
         self.route = None
         self.current_station = None
+
+    def get_occupancy(self):
+        return self.passengers / self.capacity

@@ -24,6 +24,6 @@ class Route:
 
 def generateRoute() -> Route:
     idRoute = 1
-    stations = [generateStation(i) for i in range(10)]
+    stations = [generateStation(i,i,i) for i in range(10)]
     return Route(idRoute,stations)
     

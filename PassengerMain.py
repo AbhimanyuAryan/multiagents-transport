@@ -8,15 +8,9 @@ from Classes.Bus import Bus
 import sys
 import random
 import time
+import threading
 
-def receiver(server,id):
-    random.seed(20)
-    route = generateRoute()
-    station = random.choice(route.stations[:-1])
-    agent = PassengerAgent(f"passenger{id}@{server}","password",Passenger(id,route,None,station))
-    # agent.leftBus()
-    future = agent.start()
-    future.result()
+def exec_passenger(agent):
     while agent.is_alive():
         try:
             time.sleep(1)
@@ -26,10 +20,23 @@ def receiver(server,id):
     print(f'Agent finished with code {agent.b.exit_code}')
     return 0
 
+def createPassengers(numberPassengers):
+    threadlist = []
+    for id in range(numberPassengers):
+        route = generateRoute()
+        station = random.choice(route.stations[:-1])
+        agent = PassengerAgent(f"passenger{id}@{get_server()}","password",Passenger(id,route,None,station))
+        future = agent.start()
+        future.result()
+        thread = threading.Thread(target=lambda: exec_passenger(agent))
+        thread.start()
+        threadlist.append(thread)
+    for t in threadlist:
+        t.join()
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        id = int(sys.argv[1])
-        receiver(get_server(),id)
+        numberPassengers = int(sys.argv[1])
+        createPassengers(numberPassengers)
     else:
-        print('You need to specify an ID for the passenger')
+        print('You need to specify the number of passenger')
