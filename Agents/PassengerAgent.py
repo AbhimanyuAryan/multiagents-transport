@@ -5,9 +5,8 @@ from Behaviours.NotifyPassengerRegisterBehaviour import NotifyPassengerRegisterB
 from Behaviours.PassengerBehaviour import PassengerBehaviour
 from Classes.Bus import Bus
 from Classes.Passenger import Passenger
-from Classes.Route import Route
-from Classes.Station import Station
-from Utils import Requests
+from Utils.Performative import Performative
+from Utils.MessageBuilder import MessageBuilder
 
 class PassengerAgent(Agent):
     def __init__(self,sender,password, passenger: Passenger):
@@ -51,9 +50,9 @@ class PassengerAgent(Agent):
             print("Bus is not in the same station as the passenger.")
 
     def receivedMessage(self,msg):
-        performative, body = Requests.read_message(msg)
+        performative, body = MessageBuilder.read_message(msg)
         print(f"Passenger Agent #{self.passenger.idPassenger}: New Message with the performative {performative}.")
-        if performative == Requests.get_performative_inform():
+        if performative == Performative.inform():
             if body['type'] == 'notification':
                 bus = Bus.from_dict(body['bus'])
                 self.recieveBusLocation(bus)

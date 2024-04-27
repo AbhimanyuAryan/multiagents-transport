@@ -3,7 +3,8 @@ from Behaviours.ManagerBehaviour import ManagerBehaviour
 from Behaviours.NotifyPassenger import NotifyPassengerBehaviour
 from Behaviours.NotifyBusPassenger import NotifyBusPassengerBehaviour
 from Behaviours.NotifyBusRoute import NotifyBusRouteBehaviour
-import Utils.Requests as Requests
+from Utils.Performative import Performative
+from Utils.MessageBuilder import MessageBuilder
 from Classes.Manager import Manager
 from Classes.Bus import Bus
 from Classes.Passenger import Passenger
@@ -75,9 +76,9 @@ class ManagerAgent(Agent):
         return 0
     
     def receivedMessage(self,msg):
-        performative, body = Requests.read_message(msg)
+        performative, body = MessageBuilder.read_message(msg)
         print(f"Manager Agent: New Message with the performative {performative}")
-        if performative == Requests.get_performative_subscribe():
+        if performative == Performative.subscribe():
             if body['type'] == 'Passenger':
                 print(f'Manager Agent: New Passenger')
                 passenger = Passenger.from_dict(body['data'])
@@ -86,7 +87,7 @@ class ManagerAgent(Agent):
                 print(f'Manager Agent: New Bus')
                 bus = Bus.from_dict(body['data'])
                 self.registerBus(bus)
-        elif performative == Requests.get_performative_confirm():
+        elif performative == Performative.confirm():
             bus = Bus.from_dict(body['bus'])
             route = Route.from_dict(body['route'])
             if body['action'] == 'start':
@@ -95,7 +96,7 @@ class ManagerAgent(Agent):
             elif body['action'] == 'end':
                 print(f'Manager Agent: Bus ended')
                 self.busEnded(bus,route)
-        elif performative == Requests.get_performative_inform():
+        elif performative == Performative.inform():
             if body['type'] == 'Passenger':
                 bus = Bus.from_dict(body['bus'])
                 passenger = Passenger.from_dict(body['passenger'])

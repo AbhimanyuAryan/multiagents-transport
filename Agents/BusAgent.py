@@ -7,8 +7,8 @@ from Behaviours.UpdateBusLocation import UpdateBusLocation
 from Classes.Bus import Bus
 from Classes.Route import Route
 from Classes.Passenger import Passenger
-from Classes.Station import Station
-from Utils import Requests
+from Utils.Performative import Performative
+from Utils.MessageBuilder import MessageBuilder
 
 class BusAgent(Agent):
     def __init__(self,sender,password,bus : Bus):
@@ -57,12 +57,12 @@ class BusAgent(Agent):
         self.startBus()
 
     def receivedMessage(self, msg):
-        performative, body = Requests.read_message(msg)
+        performative, body = MessageBuilder.read_message(msg)
         print(f"Bus Agent #{self.bus.idBus}: New Message with the performative {performative}.")
-        if performative == Requests.get_performative_request():
+        if performative == Performative.request():
             route = Route.from_dict(body['route'])
             self.setRoute(route)
-        elif performative == Requests.get_performative_inform():
+        elif performative == Performative.inform():
             if body['type'] == 'passenger':
                 action = body['action']
                 if action == '+':
