@@ -18,7 +18,7 @@ def serializeRegisterPassenger(receiver:str, passenger : Passenger):
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
 def serializeRegisterBus(receiver:str, bus : Bus):
     performative = Performative.subscribe()
     serializedBus = bus.to_dict()
@@ -28,7 +28,7 @@ def serializeRegisterBus(receiver:str, bus : Bus):
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
 def serializeBusStart(receiver:str, bus : Bus, route : Route):
     performative = Performative.confirm()
     serializedBus = bus.to_dict()
@@ -40,7 +40,7 @@ def serializeBusStart(receiver:str, bus : Bus, route : Route):
     }
     return MessageBuilder.build_message(receiver,performative,body)
     
-# Not Tested
+# Tested
 def serializeBusEnd(receiver:str, bus : Bus, route : Route):
     performative = Performative.confirm()
     serializedBus = bus.to_dict()
@@ -52,35 +52,35 @@ def serializeBusEnd(receiver:str, bus : Bus, route : Route):
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
 def serializePassengerEntered(receiver:str, passenger : Passenger, bus : Bus):
     performative = Performative.inform()
     serializedBus = bus.to_dict()
     serializePassenger = passenger.to_dict()
     body = {
         'type' : 'passenger',
-        'action' : 'enter',
+        'action' : '+',
         'bus' : serializedBus,
         'passenger' : serializePassenger
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
 def serializePassengerLeft(receiver:str, passenger : Passenger, bus : Bus):
     performative = Performative.inform()
     serializedBus = bus.to_dict()
     serializePassenger = passenger.to_dict()
     body = {
         'type' : 'passenger',
-        'action' : 'left',
+        'action' : '-',
         'bus' : serializedBus,
         'passenger' : serializePassenger
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
 def serializeBusNewLocation(receiver:str, bus : Bus):
-    performative = Performative.confirm()
+    performative = Performative.inform()
     serializedBus = bus.to_dict()
     body = {
         'type' : 'bus',
@@ -89,7 +89,7 @@ def serializeBusNewLocation(receiver:str, bus : Bus):
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
 def serializeNotifyPassenger(receiver:str, bus : Bus):
     performative = Performative.inform()
     serializedBus = bus.to_dict()
@@ -99,7 +99,18 @@ def serializeNotifyPassenger(receiver:str, bus : Bus):
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
+def serializeNotifyPassengerBusEnd(receiver:str, bus : Bus):
+    performative = Performative.inform()
+    serializedBus = bus.to_dict()
+    body = {
+        'type' : 'end_bus',
+        'bus' : serializedBus
+    }
+    return MessageBuilder.build_message(receiver,performative,body)
+
+
+# Tested
 def serializeNotifyBusNewPassenger(receiver:str, bus : Bus):
     performative = Performative.inform()
     serializedBus = bus.to_dict()
@@ -110,7 +121,7 @@ def serializeNotifyBusNewPassenger(receiver:str, bus : Bus):
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
 def serializeNotifyBusPassengerLeft(receiver:str, bus : Bus):
     performative = Performative.inform()
     serializedBus = bus.to_dict()
@@ -121,7 +132,7 @@ def serializeNotifyBusPassengerLeft(receiver:str, bus : Bus):
     }
     return MessageBuilder.build_message(receiver,performative,body)
 
-# Not Tested
+# Tested
 def serializeNotifyBusRoute(receiver : str, route : Route):
     performative = Performative.request()
     serializedBus = route.to_dict()

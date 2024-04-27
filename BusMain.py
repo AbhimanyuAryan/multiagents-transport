@@ -1,6 +1,6 @@
 from Agents.BusAgent import BusAgent
 import time
-from Utils import Requests
+from Utils.MessageBuilder import get_server
 import sys
 from Classes.Bus import Bus
 
@@ -22,7 +22,6 @@ def receiver(server,id):
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         id = int(sys.argv[1])
-        print(id)
-        receiver(Requests.get_server(),id)
+        receiver(get_server(),id)
     else:
         print('You need to specify an ID for the passenger')

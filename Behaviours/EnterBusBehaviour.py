@@ -8,6 +8,7 @@ class EnterBusBehaviour(OneShotBehaviour):
         super().__init__()
         self.passenger = passenger
         self.bus = bus
+
     async def run(self):
         sender = str(self.passenger.idPassenger)
         msg = serializePassengerEntered("manager",self.passenger,self.bus)

@@ -22,12 +22,13 @@ class Manager:
 
     def update_bus_location(self, bus : Bus):
         if self.buses.__contains__(bus.idBus):
-            self.buses[bus.idBus].location = bus.location
+            self.buses[bus.idBus] = bus
         else:
             print(f'Bus {bus.idBus} does not exist')
 
     def get_passengers_bus(self, bus : Bus) -> List[Passenger]:
-        return list(filter(lambda p: p.bus != None and p.bus.idBus == bus.idBus,self.passengers.values))
+        route = bus.route
+        return list(filter(lambda passenger : route.idRoute == passenger.route.idRoute,self.passengers.values()))
     
     def route_needs_bus(self, route : Route):
         buses_in_route = list(filter(lambda bus : bus.running and bus.route.idRoute == route.idRoute,self.buses.values()))
@@ -36,18 +37,20 @@ class Manager:
         return len(buses_80_per) > len(buses_in_route) - 2 or len(passenger_at_route) > 40 
 
     def passenger_entered(self, passenger : Passenger, bus : Bus):
-        self.buses[bus.idBus].passengers += 1
-        self.passengers[passenger.idPassenger].bus = bus
+        self.buses[bus.idBus].add_passenger()
+        self.passengers[passenger.idPassenger] = passenger
 
     def passenger_left(self, passenger : Passenger, bus : Bus):
-        self.buses[bus.idBus].passengers -= 1
-        self.passengers[passenger.idPassenger].bus = None
+        self.buses[bus.idBus].remove_passenger()
+        self.passengers[passenger.idPassenger] = passenger
 
-    def bus_ended(self, bus : Bus):
-        self.buses[bus.idBus].route = None
-        self.buses[bus.idBus].running = False
+    def busEnded(self, bus : Bus):
+        self.buses[bus.idBus].reset()
+        for p in self.passengers.values():
+            if p.bus != None and p.bus.idBus == bus.idBus:
+                p.leave_bus()
 
-    def bus_started(self, bus : Bus, route : Route):
+    def busStarted(self, bus : Bus, route : Route):
         self.buses[bus.idBus].route = route
         self.buses[bus.idBus].running = True
 
@@ -55,6 +58,7 @@ class Manager:
         buses_available = list(filter(lambda bus : not bus.running,self.buses.values()))
         if(len(buses_available) > 0):
             index = random.randint(0,len(buses_available) - 1)
+            buses_available[index].running = True
             return buses_available[index]
         else:
             return None

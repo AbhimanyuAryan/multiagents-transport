@@ -9,5 +9,5 @@ class PassengerBehaviour(CyclicBehaviour):
         while True:
             msg = await self.receive(timeout=10)
             if msg:
-                await self.agent.recievedMessage(msg)
+                self.agent.receivedMessage(msg)
 

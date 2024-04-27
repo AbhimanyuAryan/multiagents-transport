@@ -2,7 +2,6 @@ from Classes.Bus import Bus
 from Classes.Route import Route
 from Classes.Station import Station
 
-
 class Passenger:
     def __init__(self, idPassenger: int, route: Route, bus: Bus, initialStation: Station):
         self.idPassenger = idPassenger
@@ -32,3 +31,10 @@ class Passenger:
             bus = None
         initialStation = Station.from_dict(data['initialStation'])
         return Passenger(idPassenger,route,bus,initialStation)
+    
+    def __str__(self) -> str:
+        return f'Passenger{self.idPassenger}({self.bus})'
+    
+    def leave_bus(self, bus : Bus):
+        if self.bus != None and self.bus.idBus == bus.idBus:
+            self.bus = None

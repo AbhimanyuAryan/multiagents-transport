@@ -10,4 +10,4 @@ class BusBehaviour(CyclicBehaviour):
         while True:
             msg = await self.receive(timeout=10)
             if msg:
-                await self.agent.receivedMessage(msg)
+                self.agent.receivedMessage(msg)

@@ -12,4 +12,4 @@ class NotifyPassengerBehaviour(OneShotBehaviour):
         receiver = f'passenger{self.passenger.idPassenger}'
         msg = serializeNotifyPassenger(receiver,self.bus)
         await self.send(msg)
-        print(f"Passenger {receiver} was notified with a new bus location")
+        # print(f"Passenger {receiver} was notified with a new bus location")

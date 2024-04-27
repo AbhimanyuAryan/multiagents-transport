@@ -23,31 +23,29 @@ class PassengerAgent(Agent):
         self.add_behaviour(b)
         return 0
 
-    def enterBus (self, passenger: Passenger, bus: Bus):
-        print('Client Agent: enterBus')
+    def enterBus (self, bus: Bus):
         self.passenger.bus=bus
-        b = EnterBusBehaviour(passenger,bus)
+        b = EnterBusBehaviour(self.passenger,bus)
         self.add_behaviour(b)
         return 0
         
-    def leftBus (self, passenger: Passenger, bus: Bus):
-        print('Client Agent: leftBus')
-        self.passenger.bus=None
-        b = LeftBusBehaviour(passenger,bus)
+    def leftBus (self):
+        b = LeftBusBehaviour(self.passenger,self.passenger.bus)
         self.add_behaviour(b)
+        self.passenger.bus=None
         return 0
 
     def recieveBusLocation (self, bus: Bus):
-        print('Client Agent: recieveBus')
-        if bus.location == self.passenger.initialStation.location:
+        if bus.current_station.location == self.passenger.initialStation.location:
             print("Bus is in the same station as the passenger.")
             self.insideBus = True
-            self.enterBus(self.passenger,bus)
+            self.enterBus(bus)
         elif self.insideBus:
+            print("Leaving the bus")
             self.leftBus()
             self.insideBus = False
         else:
-            print("Bus is not in the same station as the passenger.")
+            print(f"Bus {bus.current_station.location} is not in the same station as the passenger {self.passenger.initialStation.location}.")
 
     def receivedMessage(self,msg):
         performative, body = MessageBuilder.read_message(msg)
@@ -56,5 +54,9 @@ class PassengerAgent(Agent):
             if body['type'] == 'notification':
                 bus = Bus.from_dict(body['bus'])
                 self.recieveBusLocation(bus)
+            elif body['type'] == 'end_bus':
+                print('Passenger Agent: Leaving the Bus')
+                bus = Bus.from_dict(body['bus'])
+                self.passenger.leave_bus(bus)
         else:
             print(f"Passenger Agent does not know how to handle this performative: {performative}.")
