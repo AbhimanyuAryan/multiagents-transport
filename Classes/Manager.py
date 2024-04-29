@@ -27,8 +27,7 @@ class Manager:
             print(f'Bus {bus.idBus} does not exist')
 
     def get_passengers_bus(self, bus : Bus) -> List[Passenger]:
-        route = bus.route
-        return [p for p in self.passengers.values() if route.idRoute == p.route.idRoute]
+        return [p for p in self.passengers.values() if p.bus != None and p.bus.idBus == bus.idBus]
     
     
     def route_needs_bus(self, route : Route):
@@ -44,14 +43,13 @@ class Manager:
     def passenger_left(self, passenger : Passenger, bus : Bus):
         self.buses[bus.idBus].remove_passenger()
         self.passengers[passenger.idPassenger] = passenger
-        # del self.passengers[passenger.idPassenger]
+        del self.passengers[passenger.idPassenger]
 
     def busEnded(self, bus : Bus):
         self.buses[bus.idBus].reset()
         for p in self.passengers.values():
-            if p.leave_bus(bus):
-                continue
-                # del self.passengers[p.idPassenger]
+            if p.bus != None and p.bus.idBus == bus.idBus:
+                del self.passengers[p.idPassenger]
 
     def busStarted(self, bus : Bus, route : Route):
         self.buses[bus.idBus].route = route

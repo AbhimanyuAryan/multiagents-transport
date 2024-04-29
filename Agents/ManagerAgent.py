@@ -44,8 +44,8 @@ class ManagerAgent(Agent):
         return 0
     
     def busEnded(self, bus : Bus , route : Route):
-        self.manager.busEnded(bus)
         passenger_to_notify = self.manager.get_passengers_bus(bus)
+        self.manager.busEnded(bus)
         aux = [p.idPassenger for p in passenger_to_notify]
         print(f'Manager Agent: The bus {bus.idBus} ended its route. These passengers will be notified: {aux}')
         for p in passenger_to_notify:

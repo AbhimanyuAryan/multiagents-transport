@@ -34,7 +34,7 @@ class PassengerAgent(Agent):
         print(f"Passenger {self.passenger.idPassenger}: Notified manager to leave a bus.")
         b = LeftBusBehaviour(self.passenger,self.passenger.bus)
         self.add_behaviour(b)
-        self.passenger.bus=None
+        self.stop()
         return 0
 
     def recieveBusLocation (self, bus: Bus):
@@ -52,9 +52,8 @@ class PassengerAgent(Agent):
             print(f"Passenger Agent {self.passenger.idPassenger}: Bus {bus.idBus} is on another Station.")
     
     def leaveBus(self,bus : Bus):
-        if self.insideBus != 0:
-            print(f'Passenger Agent {self.passenger.idPassenger}: Leaving the Bus')
-            self.passenger.leave_bus(bus)
+        print(f'Passenger Agent {self.passenger.idPassenger}: Leaving the Bus')
+        self.stop()
 
     def receivedMessage(self,msg):
         performative, body = MessageBuilder.read_message(msg)
@@ -63,7 +62,7 @@ class PassengerAgent(Agent):
             if body['type'] == 'notification':
                 bus = Bus.from_dict(body['bus'])
                 self.recieveBusLocation(bus)
-            elif body['type'] == 'end_bus' and self.insideBus != 0:
+            elif body['type'] == 'end_bus':
                 bus = Bus.from_dict(body['bus'])
                 self.leaveBus(bus)
         else:
