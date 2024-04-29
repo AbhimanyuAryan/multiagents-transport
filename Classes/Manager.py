@@ -28,12 +28,13 @@ class Manager:
 
     def get_passengers_bus(self, bus : Bus) -> List[Passenger]:
         route = bus.route
-        return list(filter(lambda passenger : route.idRoute == passenger.route.idRoute,self.passengers.values()))
+        return [p for p in self.passengers.values() if route.idRoute == p.route.idRoute]
+    
     
     def route_needs_bus(self, route : Route):
-        buses_in_route = list(filter(lambda bus : bus.running and bus.route.idRoute == route.idRoute,self.buses.values()))
-        buses_80_per = list(filter(lambda bus : bus.get_occupancy(), buses_in_route))
-        passenger_at_route = list(filter(lambda passenger : route.idRoute == passenger.route.idRoute,self.passengers.values()))
+        buses_in_route = [b for b in self.buses.values() if b.running and b.route.idRoute == route.idRoute]
+        buses_80_per = [b for b in buses_in_route if b.get_occupancy() >= 0.8]
+        passenger_at_route = [p for p in self.passengers.values() if p.bus == None and route.idRoute == p.route.idRoute]
         return len(buses_in_route) == 0 or (len(buses_80_per) == len(buses_in_route) and len(passenger_at_route) > 40)
 
     def passenger_entered(self, passenger : Passenger, bus : Bus):
@@ -43,12 +44,14 @@ class Manager:
     def passenger_left(self, passenger : Passenger, bus : Bus):
         self.buses[bus.idBus].remove_passenger()
         self.passengers[passenger.idPassenger] = passenger
+        # del self.passengers[passenger.idPassenger]
 
     def busEnded(self, bus : Bus):
         self.buses[bus.idBus].reset()
         for p in self.passengers.values():
-            if p.bus != None and p.bus.idBus == bus.idBus:
-                p.leave_bus(bus)
+            if p.leave_bus(bus):
+                continue
+                # del self.passengers[p.idPassenger]
 
     def busStarted(self, bus : Bus, route : Route):
         self.buses[bus.idBus].route = route
