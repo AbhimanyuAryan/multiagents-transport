@@ -38,3 +38,6 @@ class Passenger:
     def leave_bus(self, bus : Bus):
         if self.bus != None and self.bus.idBus == bus.idBus:
             self.bus = None
+            return True
+        else:
+            return False
