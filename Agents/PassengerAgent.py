@@ -30,40 +30,40 @@ class PassengerAgent(Agent):
         self.add_behaviour(b)
         return 0
         
-    def leftBus (self):
+    async def leftBus (self):
         print(f"Passenger {self.passenger.idPassenger}: Notified manager to leave a bus.")
         b = LeftBusBehaviour(self.passenger,self.passenger.bus)
         self.add_behaviour(b)
-        self.stop()
+        await self.stop()
         return 0
 
-    def recieveBusLocation (self, bus: Bus):
+    async def recieveBusLocation (self, bus: Bus):
         if self.insideBus == 0 and bus.current_station.location == self.passenger.initialStation.location:
             print(f"Passenger Agent {self.passenger.idPassenger}: Bus is in the same station as the passenger.")
             self.insideBus = 1
             self.enterBus(bus)
         elif self.insideBus == 4:
             print(f"Passenger Agent {self.passenger.idPassenger}: Leaving the bus")
-            self.leftBus()
+            await self.leftBus()
             self.insideBus = 0
         else:
             if self.insideBus != 0:
                 self.insideBus += 1
             print(f"Passenger Agent {self.passenger.idPassenger}: Bus {bus.idBus} is on another Station.")
     
-    def leaveBus(self,bus : Bus):
+    async def leaveBus(self,bus : Bus):
         print(f'Passenger Agent {self.passenger.idPassenger}: Leaving the Bus')
-        self.stop()
+        await self.stop()
 
-    def receivedMessage(self,msg):
+    async def receivedMessage(self,msg):
         performative, body = MessageBuilder.read_message(msg)
         # print(f"Passenger Agent {self.passenger.idPassenger}: New Message with the performative {performative}.")
         if performative == Performative.inform():
             if body['type'] == 'notification':
                 bus = Bus.from_dict(body['bus'])
-                self.recieveBusLocation(bus)
+                await self.recieveBusLocation(bus)
             elif body['type'] == 'end_bus':
                 bus = Bus.from_dict(body['bus'])
-                self.leaveBus(bus)
+                await self.leaveBus(bus)
         else:
             print(f"Passenger Agent {self.passenger.idPassenger}: This performative: {performative} is not supported.")
