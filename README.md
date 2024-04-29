@@ -6,9 +6,14 @@
 
 ## components of project
 
-- Abhimanyu
-  - 
-- Jose
-  -
-- Miguel
-  -
+- ## Abhimanyu
+- ## Jose
+- ## Miguel
+
+# STEPS TO START THE PROJECT
+
+```bash
+python3 ManagerMain.py
+python3 BusMain.py 1
+python3 PassengerMain.py 10
+```
