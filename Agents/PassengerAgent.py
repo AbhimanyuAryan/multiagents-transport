@@ -50,6 +50,11 @@ class PassengerAgent(Agent):
             if self.insideBus != 0:
                 self.insideBus += 1
             print(f"Passenger Agent {self.passenger.idPassenger}: Bus {bus.idBus} is on another Station.")
+    
+    def leaveBus(self,bus : Bus):
+        if self.insideBus != 0:
+            print(f'Passenger Agent {self.passenger.idPassenger}: Leaving the Bus')
+            self.passenger.leave_bus(bus)
 
     def receivedMessage(self,msg):
         performative, body = MessageBuilder.read_message(msg)
@@ -59,8 +64,7 @@ class PassengerAgent(Agent):
                 bus = Bus.from_dict(body['bus'])
                 self.recieveBusLocation(bus)
             elif body['type'] == 'end_bus' and self.insideBus != 0:
-                print(f'Passenger Agent {self.passenger.idPassenger}: Leaving the Bus')
                 bus = Bus.from_dict(body['bus'])
-                self.passenger.leave_bus(bus)
+                self.leaveBus(bus)
         else:
             print(f"Passenger Agent {self.passenger.idPassenger}: This performative: {performative} is not supported.")
