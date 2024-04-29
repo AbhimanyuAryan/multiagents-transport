@@ -1,6 +1,3 @@
-import jsonpickle
-import random
-
 class Station:
     def __init__(self,idstation : int,location_x : float,location_y : float):
         self.idStation = idstation
@@ -19,6 +16,9 @@ class Station:
         location_x = data['location_x']
         location_y = data['location_y']
         return Station(idStation,location_x,location_y)
+    
+    def __str__(self) -> str:
+        return f'Station({self.idStation},{self.location[0]},{self.location[1]})'
 
-def generateStation(idStation) -> Station:
-    return Station(idStation,random.uniform(0,20), random.uniform(0,20))
+def generateStation(idStation,x,y) -> Station:
+    return Station(idStation,x,y)

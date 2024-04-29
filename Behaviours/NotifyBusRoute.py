@@ -9,7 +9,6 @@ class NotifyBusRouteBehaviour(OneShotBehaviour):
         self.bus = bus
         self.route = route
     async def run(self):
-        receiver = str(self.bus.idBus)
+        receiver = f'bus{self.bus.idBus}'
         msg = serializeNotifyBusRoute(receiver,self.route)
         await self.send(msg)
-        print(f"Bus {receiver} was notified to request a new route")

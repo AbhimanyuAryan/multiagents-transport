@@ -1,6 +1,7 @@
 from Agents.ManagerAgent import ManagerAgent
 import time
-from Utils import Requests
+from Utils.MessageBuilder import get_server
+import random
 
 def receiver(server):
     agent = ManagerAgent(f"manager@{server}","password")
@@ -17,4 +18,4 @@ def receiver(server):
 
 
 if __name__ == '__main__':
-    receiver(Requests.get_server())
+    receiver(get_server())
