@@ -29,6 +29,9 @@ class Manager:
     def get_passengers_bus(self, bus : Bus) -> List[Passenger]:
         return [p for p in self.passengers.values() if p.bus != None and p.bus.idBus == bus.idBus]
     
+    def get_passengers_route(self, route : Route) -> List[Passenger]:
+        return [p for p in self.passengers.values() if p.route.idRoute == route.idRoute]
+    
     
     def route_needs_bus(self, route : Route):
         buses_in_route = [b for b in self.buses.values() if b.running and b.route.idRoute == route.idRoute]
@@ -47,9 +50,12 @@ class Manager:
 
     def busEnded(self, bus : Bus):
         self.buses[bus.idBus].reset()
+        ids = []
         for p in self.passengers.values():
             if p.bus != None and p.bus.idBus == bus.idBus:
-                del self.passengers[p.idPassenger]
+                ids.append(p.idPassenger)
+        for id in ids:
+            del self.passengers[id]
 
     def busStarted(self, bus : Bus, route : Route):
         self.buses[bus.idBus].route = route

@@ -24,35 +24,34 @@ class PassengerAgent(Agent):
         return 0
 
     def enterBus (self, bus: Bus):
-        print(f"Passenger {self.passenger.idPassenger}: Notified manager to enter a bus.")
+        # print(f"Passenger {self.passenger.idPassenger}: Notified manager to enter a bus.")
         self.passenger.bus=bus
         b = EnterBusBehaviour(self.passenger,bus)
         self.add_behaviour(b)
         return 0
         
     async def leftBus (self):
-        print(f"Passenger {self.passenger.idPassenger}: Notified manager to leave a bus.")
+        # print(f"Passenger {self.passenger.idPassenger}: Notified manager to leave a bus.")
         b = LeftBusBehaviour(self.passenger,self.passenger.bus)
         self.add_behaviour(b)
-        await self.stop()
         return 0
 
     async def recieveBusLocation (self, bus: Bus):
         if self.insideBus == 0 and bus.current_station.location == self.passenger.initialStation.location:
-            print(f"Passenger Agent {self.passenger.idPassenger}: Bus is in the same station as the passenger.")
+            print(f"Passenger Agent {self.passenger.idPassenger}: Entering the bus {bus.idBus}.")
             self.insideBus = 1
             self.enterBus(bus)
         elif self.insideBus == 4:
-            print(f"Passenger Agent {self.passenger.idPassenger}: Leaving the bus")
+            print(f"Passenger Agent {self.passenger.idPassenger}: Leaving the bus {self.passenger.bus.idBus}")
             await self.leftBus()
-            self.insideBus = 0
         else:
             if self.insideBus != 0:
                 self.insideBus += 1
-            print(f"Passenger Agent {self.passenger.idPassenger}: Bus {bus.idBus} is on another Station.")
+            # else:
+            #     print(f"Passenger Agent {self.passenger.idPassenger}: Bus {bus.idBus} is on another Station.")
     
     async def leaveBus(self,bus : Bus):
-        print(f'Passenger Agent {self.passenger.idPassenger}: Leaving the Bus')
+        print(f'Passenger Agent {self.passenger.idPassenger}: Leaving the Bus {self.passenger.bus.idBus}')
         await self.stop()
 
     async def receivedMessage(self,msg):

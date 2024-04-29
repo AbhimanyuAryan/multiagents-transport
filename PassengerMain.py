@@ -17,14 +17,14 @@ def exec_passenger(agent):
         except KeyboardInterrupt:
             agent.stop()
             break
-    print(f'Agent finished with code {agent.b.exit_code}')
+    print(f'Passenger {agent.passenger.idPassenger} finished')
     return 0
 
 def createPassengers(numberPassengers):
     threadlist = []
     for id in range(numberPassengers):
         route = generateRoute()
-        station = random.choice(route.stations[:-1])
+        station = random.choice(route.stations[3:-1])
         agent = PassengerAgent(f"passenger{id}@{get_server()}","password",Passenger(id,route,None,station))
         future = agent.start()
         future.result()

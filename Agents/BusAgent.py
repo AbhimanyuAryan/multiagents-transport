@@ -31,11 +31,11 @@ class BusAgent(Agent):
 
     def passengerEntered(self):
         self.bus.add_passenger()
-        print(f'Bus Agent {self.bus.idBus}: New Passenger {self.bus.passengers}')
+        print(f'Bus Agent {self.bus.idBus}: New Passenger. Current number of passenger: {self.bus.passengers}')
 
     def passengerLeft(self):
         self.bus.remove_passenger()
-        print(f'Bus Agent {self.bus.idBus}: Passenger Left {self.bus.passengers}')
+        print(f'Bus Agent {self.bus.idBus}: Passenger Left. Current number of passenger: {self.bus.passengers}')
 
     def updateLocation(self):
         route = self.bus.route

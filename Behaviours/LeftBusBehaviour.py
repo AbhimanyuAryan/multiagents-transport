@@ -11,3 +11,4 @@ class LeftBusBehaviour(OneShotBehaviour):
     async def run(self):
         msg = serializePassengerLeft("manager",self.passenger,self.bus)
         await self.send(msg)
+        await self.agent.stop()
