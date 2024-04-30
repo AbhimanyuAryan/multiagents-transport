@@ -5,6 +5,7 @@ from pygame.locals import *
 import time
 from Utils.MessageBuilder import get_server
 import random
+import os
 
 # Initialize Pygame
 pygame.init()
@@ -21,6 +22,12 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
+bus_image = pygame.image.load(os.path.join("assets", "bus", "bus.png"))
+bus_image = pygame.transform.scale(bus_image, (50, 20))  # Adjust size as needed
+
+pagsenger_image = pygame.image.load(os.path.join("assets", "passenger", "passenger.png"))
+pagsenger_image = pygame.transform.scale(pagsenger_image, (20, 20))  # Adjust size as needed
+
 station_positions = []
 
 def draw_route(station_count):
@@ -34,16 +41,21 @@ def draw_route(station_count):
     screen.blit(text, (350, 250))
 
 def draw_buses(buses):
-    for bus_id, bus in buses.items():
-        x = random.randint(0, screen_width)
-        y = random.randint(0, screen_height)
-        pygame.draw.circle(screen, RED, (x,y), 10)
+    # Assuming the start of the route line is at (100, 300)
+    start_x = 10
+    start_y = 300
+    distance_between_buses = 50
+    
+    for i in buses:
+        x = start_x + i
+        y = start_y + i * distance_between_buses
+        screen.blit(bus_image, (x, y))
 
 def draw_passengers(passengers):
     for passenger_id, passenger in passengers.items():
         x = random.randint(0, screen_width)
         y = random.randint(0, screen_height)
-        pygame.draw.circle(screen, BLUE, (x,y), 5)
+        screen.blit(pagsenger_image, (x, y))
 
 def get_data_from_agent(agent):
     # Get route, buses and passengers data from the agent
@@ -58,6 +70,19 @@ def get_data_from_agent(agent):
     buses = agent.manager.buses
     passengers = agent.manager.passengers
     return station_count, buses, passengers
+
+def draw_ui(passenger_count, bus_count):
+    box_size = 100
+    margin = 10
+    box_x = screen_width - box_size - margin
+    box_y = margin
+    pygame.draw.rect(screen, BLACK, (box_x, box_y, box_size, box_size), 2)
+
+    font = pygame.font.Font(None, 24)
+    text_passenger = font.render(f"P: {passenger_count}", True, BLACK)
+    text_bus = font.render(f"B: {bus_count}", True, BLACK)
+    screen.blit(text_passenger, (box_x + margin, box_y + margin))
+    screen.blit(text_bus, (box_x + margin, box_y + margin + 30))
     
 def main(server):
     agent = ManagerAgent(f"manager@{server}","password")
@@ -78,6 +103,7 @@ def main(server):
         draw_buses(buses)
         draw_passengers(passengers)
         draw_route(station_count)
+        draw_ui(len(passengers), len(buses))
 
         # Update the display
         pygame.display.flip()
