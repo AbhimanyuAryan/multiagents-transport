@@ -21,13 +21,12 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
+station_positions = []
 
 def draw_route(station_count):
     pygame.draw.line(screen, BLUE, (0, 300), (800, 300), 5)
 
-    for i in range(station_count):
-        station_x = 100 + i * (800 - 100) // (station_count - 1)
-        station_x += random.randint(-10, 10)
+    for i, station_x in enumerate(station_positions):
         pygame.draw.circle(screen, BLACK, (station_x, 300), 10)
 
     font = pygame.font.Font(None, 36)
@@ -49,7 +48,12 @@ def draw_passengers(passengers):
 def get_data_from_agent(agent):
     # Get route, buses and passengers data from the agent
     station_count = len(agent.manager.routes[1].stations)
-    print(f"\033[1;32;40m{station_count}\033[m")
+    
+    global station_positions
+    if len(station_positions) != station_count:
+        station_positions = [random.randint(110, screen_width - 110) for _ in range(station_count)]
+    
+    print(f"\033[1;32;40m{station_positions}\033[m")
 
     buses = agent.manager.buses
     passengers = agent.manager.passengers
@@ -60,7 +64,6 @@ def main(server):
     future = agent.start()
     future.result()
 
-    # Simulation and visualization loop
     running = True
     while running:
         for event in pygame.event.get():
