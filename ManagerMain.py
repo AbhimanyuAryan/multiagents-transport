@@ -21,30 +21,41 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
-# Function to draw buses
+
+def draw_route(station_count):
+    pygame.draw.line(screen, BLUE, (0, 300), (800, 300), 5)
+
+    for i in range(station_count):
+        station_x = 100 + i * (800 - 100) // (station_count - 1)
+        station_x += random.randint(-10, 10)
+        pygame.draw.circle(screen, BLACK, (station_x, 300), 10)
+
+    font = pygame.font.Font(None, 36)
+    text = font.render("Route 55", 1, BLACK)
+    screen.blit(text, (350, 250))
+
 def draw_buses(buses):
     for bus_id, bus in buses.items():
         x = random.randint(0, screen_width)
         y = random.randint(0, screen_height)
         pygame.draw.circle(screen, RED, (x,y), 10)
 
-# Function to draw passengers
 def draw_passengers(passengers):
     for passenger_id, passenger in passengers.items():
         x = random.randint(0, screen_width)
         y = random.randint(0, screen_height)
         pygame.draw.circle(screen, BLUE, (x,y), 5)
 
-# Function to get data from ManagerAgent
 def get_data_from_agent(agent):
-    # Get buses and passengers data from the agent
+    # Get route, buses and passengers data from the agent
+    station_count = len(agent.manager.routes[1].stations)
+    print(f"\033[1;32;40m{station_count}\033[m")
+
     buses = agent.manager.buses
     passengers = agent.manager.passengers
-    return buses, passengers
-
-# Main function to run the simulation and visualization
+    return station_count, buses, passengers
+    
 def main(server):
-    # Create the manager agent
     agent = ManagerAgent(f"manager@{server}","password")
     future = agent.start()
     future.result()
@@ -59,14 +70,11 @@ def main(server):
         # Clear the screen
         screen.fill(WHITE)
 
-        # Get buses and passengers data from the agent
-        buses, passengers = get_data_from_agent(agent)
+        station_count, buses, passengers = get_data_from_agent(agent)
 
-        # Draw buses
         draw_buses(buses)
-
-        # Draw passengers
         draw_passengers(passengers)
+        draw_route(station_count)
 
         # Update the display
         pygame.display.flip()
@@ -81,27 +89,3 @@ def main(server):
 
 if __name__ == '__main__':
     main(get_server())
-
-
-
-# from Agents.ManagerAgent import ManagerAgent
-# import time
-# from Utils.MessageBuilder import get_server
-# import random
-
-# def receiver(server):
-#     agent = ManagerAgent(f"manager@{server}","password")
-#     future = agent.start()
-#     future.result()
-#     while agent.is_alive():
-#         try:
-#             time.sleep(1)
-#         except KeyboardInterrupt:
-#             agent.stop()
-#             break
-#     print(f'Agent finished with code {agent.b.exit_code}')
-#     return 0
-
-
-# if __name__ == '__main__':
-#     receiver(get_server())
