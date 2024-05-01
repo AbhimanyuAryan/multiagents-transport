@@ -41,13 +41,11 @@ def draw_route(station_count):
     screen.blit(text, (350, 250))
 
 def draw_buses(buses):
-    # Assuming the start of the route line is at (100, 300)
-    start_x = 10
     start_y = 300
     distance_between_buses = 50
+    x = screen_width - 30
     
-    for i in buses:
-        x = start_x + i
+    for i in range(len(buses)):
         y = start_y + i * distance_between_buses
         screen.blit(bus_image, (x, y))
 
