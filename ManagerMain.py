@@ -40,19 +40,18 @@ def initialize_station_positions(station_count):
             if station_positions[i] - station_positions[i-1] < offset:
                 station_positions[i] = station_positions[i-1] + offset
 
-def draw_route(stations):
+def draw_route_stations_passengers(stations, passengers):
     pygame.draw.line(screen, BLUE, (0, 300), (800, 300), 5)
 
-    # Convert keys and values to lists
     keys_list = list(stations.keys())
     values_list = list(stations.values())
 
-    # print colored stations keys and dictionary values
-    print(f"\033[1;32;40m{keys_list}\033[m")
-    print(f"\033[1;32;40m{values_list}\033[m")
-
     for station_x in values_list:
         pygame.draw.circle(screen, BLACK, (station_x, 300), 10)
+
+    #TODO: draw passengers
+    for passenger in passengers:
+        print(f"\033[1;32;40m{passenger.initialStation}\033[m")
 
     font = pygame.font.Font(None, 36)
     text = font.render("Linha 45", 1, BLACK)
@@ -67,11 +66,12 @@ def draw_buses(buses):
         y = start_y + i * distance_between_buses
         screen.blit(bus_image, (x, y))
 
-def draw_passengers(passengers):
-    for passenger_id, passenger in passengers.items():
-        x = random.randint(0, screen_width)
-        y = random.randint(0, screen_height)
-        screen.blit(pagsenger_image, (x, y))
+#FIXME: Remove this logic later as it is moved to draw_route_stations_passengers
+# def draw_passengers(passengers):
+#     for passenger_id, passenger in passengers.items():
+#         x = random.randint(0, screen_width)
+#         y = random.randint(0, screen_height)
+#         screen.blit(pagsenger_image, (x, y))
 
 def get_data_from_agent(agent):
     # Get route, buses and passengers data from the agent
@@ -118,8 +118,7 @@ def main(server):
         stations, buses, passengers = get_data_from_agent(agent)
 
         draw_buses(buses)
-        draw_passengers(passengers)
-        draw_route(stations)
+        draw_route_stations_passengers(stations, passengers)
         draw_ui(len(passengers), len(buses))
 
         # Update the display
