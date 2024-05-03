@@ -43,15 +43,13 @@ def initialize_station_positions(station_count):
 def draw_route_stations_passengers(stations, passengers):
     pygame.draw.line(screen, BLUE, (0, 300), (800, 300), 5)
 
-    keys_list = list(stations.keys())
-    values_list = list(stations.values())
-
-    for station_x in values_list:
+    for key, station_x in stations.items():
         pygame.draw.circle(screen, BLACK, (station_x, 300), 10)
-
-    #TODO: draw passengers
-    for passenger in passengers:
-        print(f"\033[1;32;40m{passenger.initialStation}\033[m")
+        for passenger in passengers:
+            if passenger.initialStation.idStation == key:
+                offset_x = random.randint(-20, 20)
+                offset_y = random.randint(-20, 20)
+                screen.blit(pagsenger_image, (station_x - 20 + offset_x, 280 + offset_y))
 
     font = pygame.font.Font(None, 36)
     text = font.render("Linha 45", 1, BLACK)
@@ -66,15 +64,7 @@ def draw_buses(buses):
         y = start_y + i * distance_between_buses
         screen.blit(bus_image, (x, y))
 
-#FIXME: Remove this logic later as it is moved to draw_route_stations_passengers
-# def draw_passengers(passengers):
-#     for passenger_id, passenger in passengers.items():
-#         x = random.randint(0, screen_width)
-#         y = random.randint(0, screen_height)
-#         screen.blit(pagsenger_image, (x, y))
-
 def get_data_from_agent(agent):
-    # Get route, buses and passengers data from the agent
     station_ids = [station.idStation for station in agent.manager.routes[1].stations]
     
     global station_positions
@@ -86,7 +76,8 @@ def get_data_from_agent(agent):
     
     buses = agent.manager.buses
     passengers = agent.manager.passengers
-    return stations, buses, passengers
+    
+    return stations, buses.values(), passengers.values()
 
 def draw_ui(passenger_count, bus_count):
     box_size = 100
