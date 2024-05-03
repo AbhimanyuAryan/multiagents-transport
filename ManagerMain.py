@@ -29,8 +29,8 @@ pagsenger_image = pygame.image.load(os.path.join("assets", "passenger", "passeng
 pagsenger_image = pygame.transform.scale(pagsenger_image, (20, 20))  # Adjust size as needed
 
 station_positions = []
-
 bus_sprites = {}
+passenger_at_station = {}
 
 def initialize_station_positions(station_count):
     global station_positions
@@ -42,16 +42,32 @@ def initialize_station_positions(station_count):
             if station_positions[i] - station_positions[i-1] < offset:
                 station_positions[i] = station_positions[i-1] + offset
 
-def draw_route_stations_passengers(stations, passengers):
+def draw_route_stations_passengers_movebuses(stations, passengers, buses):
+    global passenger_at_station
     pygame.draw.line(screen, BLUE, (0, 300), (800, 300), 5)
+    
+    for bus in buses:
+        if bus.running:
+            for key, station_x in stations.items():
+                pygame.draw.circle(screen, BLACK, (station_x, 300), 10)
+                passenger_at_station[key] = []
+                if bus.current_station.idStation < key:
+                    for passenger in passengers:
+                        if passenger.initialStation.idStation == key: 
+                            offset_x = random.randint(-20, 20)
+                            offset_y = random.randint(-20, 20)
+                            passenger_sprite = screen.blit(pagsenger_image, (station_x - 20 + offset_x, 280 + offset_y))
+                            passenger_at_station[key].append(passenger_sprite)
+                
+                # if bus.running:
+                current_station_index = bus.current_station.idStation
+                current_station_pos = station_positions[current_station_index]
+                screen.blit(bus_image, (current_station_pos, 300))
+                if current_station_index in passenger_at_station:
+                    #move those sprite location outside the viewport
+                    for passenger_sprite in passenger_at_station[current_station_index]:
+                        passenger_sprite.move_ip(-1000, -1000)
 
-    for key, station_x in stations.items():
-        pygame.draw.circle(screen, BLACK, (station_x, 300), 10)
-        for passenger in passengers:
-            if passenger.initialStation.idStation == key:
-                offset_x = random.randint(-20, 20)
-                offset_y = random.randint(-20, 20)
-                screen.blit(pagsenger_image, (station_x - 20 + offset_x, 280 + offset_y))
 
     font = pygame.font.Font(None, 36)
     text = font.render("Linha 43", 1, BLACK)
@@ -70,23 +86,8 @@ def draw_buses(buses):
             bus_sprites[bus.idBus] = bus_sprite
 
 
-def move_buses(buses, stations):
-    for bus in buses:
-        if bus.running:
-            current_station_index = bus.current_station.idStation
-            next_station_index = current_station_index + 1
-
-            current_station_pos = station_positions[current_station_index]
-            next_station_pos = station_positions[next_station_index]
-
-            print("Current station position", current_station_pos)
-            print("Next station position", next_station_pos)
-            print("what is in bus_sprites", bus_sprites[bus.idBus])
-
-            # get bus_sprite from bus_sprites matching bus.idBus
-            bus_sprite = bus_sprites[bus.idBus]
-            # draw the bus_sprite at the current_station_pos
-            screen.blit(bus_image, (current_station_pos, 300))
+# def move_buses(buses, stations):
+    
 
 
 def get_data_from_agent(agent):
@@ -134,10 +135,10 @@ def main(server):
         stations, buses, passengers = get_data_from_agent(agent)
 
         draw_buses(buses)
-        draw_route_stations_passengers(stations, passengers)
+        draw_route_stations_passengers_movebuses(stations, passengers, buses)
         draw_ui(len(passengers), len(buses))
 
-        move_buses(buses, stations)
+        # move_buses(buses, stations)
 
         # Update the display
         pygame.display.flip()
