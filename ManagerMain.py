@@ -30,6 +30,8 @@ pagsenger_image = pygame.transform.scale(pagsenger_image, (20, 20))  # Adjust si
 
 station_positions = []
 
+bus_sprites = {}
+
 def initialize_station_positions(station_count):
     global station_positions
     if not station_positions:
@@ -52,17 +54,40 @@ def draw_route_stations_passengers(stations, passengers):
                 screen.blit(pagsenger_image, (station_x - 20 + offset_x, 280 + offset_y))
 
     font = pygame.font.Font(None, 36)
-    text = font.render("Linha 45", 1, BLACK)
+    text = font.render("Linha 43", 1, BLACK)
     screen.blit(text, (350, 250))
 
 def draw_buses(buses):
+    global bus_sprites
     start_y = 300
     distance_between_buses = 50
     x = screen_width - 30
 
-    for i in range(len(buses)):
-        y = start_y + i * distance_between_buses
-        screen.blit(bus_image, (x, y))
+    for i, bus in enumerate(buses):
+        if not bus.running:
+            y = start_y + i * distance_between_buses
+            bus_sprite = screen.blit(bus_image, (x, y))
+            bus_sprites[bus.idBus] = bus_sprite
+
+
+def move_buses(buses, stations):
+    for bus in buses:
+        if bus.running:
+            current_station_index = bus.current_station.idStation
+            next_station_index = current_station_index + 1
+
+            current_station_pos = station_positions[current_station_index]
+            next_station_pos = station_positions[next_station_index]
+
+            print("Current station position", current_station_pos)
+            print("Next station position", next_station_pos)
+            print("what is in bus_sprites", bus_sprites[bus.idBus])
+
+            # get bus_sprite from bus_sprites matching bus.idBus
+            bus_sprite = bus_sprites[bus.idBus]
+            # draw the bus_sprite at the current_station_pos
+            screen.blit(bus_image, (current_station_pos, 300))
+
 
 def get_data_from_agent(agent):
     station_ids = [station.idStation for station in agent.manager.routes[1].stations]
@@ -111,6 +136,8 @@ def main(server):
         draw_buses(buses)
         draw_route_stations_passengers(stations, passengers)
         draw_ui(len(passengers), len(buses))
+
+        move_buses(buses, stations)
 
         # Update the display
         pygame.display.flip()
