@@ -1,7 +1,6 @@
 from spade.agent import Agent
 from Behaviours.EnterBusBehaviour import EnterBusBehaviour
 from Behaviours.LeftBusBehaviour import LeftBusBehaviour
-from Behaviours.NotifyPassengerRegisterBehaviour import NotifyPassengerRegisterBehaviour
 from Behaviours.PassengerBehaviour import PassengerBehaviour
 from Classes.Bus import Bus
 from Classes.Passenger import Passenger
@@ -16,12 +15,6 @@ class PassengerAgent(Agent):
         self.behaviour = PassengerBehaviour()
         self.add_behaviour(self.behaviour)
         self.insideBus = 0
-
-    def registerPassenger(self, passenger:Passenger):
-        print(f'Passenger Agent {self.passenger.idPassenger}: Registering the Passenger')
-        b = NotifyPassengerRegisterBehaviour(passenger)
-        self.add_behaviour(b)
-        return 0
 
     def enterBus (self, bus: Bus):
         # print(f"Passenger {self.passenger.idPassenger}: Notified manager to enter a bus.")
