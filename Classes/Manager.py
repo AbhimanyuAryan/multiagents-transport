@@ -29,15 +29,21 @@ class Manager:
     def get_passengers_bus(self, bus : Bus) -> List[Passenger]:
         return [p for p in self.passengers.values() if p.bus != None and p.bus.idBus == bus.idBus]
     
-    def get_passengers_route(self, route : Route) -> List[Passenger]:
-        return [p for p in self.passengers.values() if p.route.idRoute == route.idRoute]
+    def get_passengers_route(self, bus : Bus) -> List[Passenger]:
+        route = bus.route
+        return [p for p in self.passengers.values() if (p.bus == None and p.route.idRoute == route.idRoute) or p.bus.idBus == bus.idBus]
     
     
     def route_needs_bus(self, route : Route):
         buses_in_route = [b for b in self.buses.values() if b.running and b.route.idRoute == route.idRoute]
         buses_80_per = [b for b in buses_in_route if b.get_occupancy() >= 0.8]
         passenger_at_route = [p for p in self.passengers.values() if p.bus == None and route.idRoute == p.route.idRoute]
-        return len(buses_in_route) == 0 or (len(buses_80_per) == len(buses_in_route) and len(passenger_at_route) > 40)
+        if len(buses_in_route) > 0:
+            last_station = min([route.getIndexStation(b.current_station) for b in buses_in_route])
+            for p in passenger_at_route:
+                if route.getIndexStation(p.initialStation) < last_station:
+                    return True
+        return len(buses_in_route) == 0 or (len(buses_80_per) == len(buses_in_route) and len(passenger_at_route) > 20)
 
     def passenger_entered(self, passenger : Passenger, bus : Bus):
         self.buses[bus.idBus].add_passenger()

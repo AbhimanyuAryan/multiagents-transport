@@ -75,7 +75,7 @@ class ManagerAgent(Agent):
     
     def updateBusLocation(self,bus : Bus):
         self.manager.update_bus_location(bus)
-        passenger_to_notify = self.manager.get_passengers_route(bus.route)
+        passenger_to_notify = self.manager.get_passengers_route(bus)
         aux = [p.idPassenger for p in passenger_to_notify]
         print(f'Manager Agent: Received a new station for bus {bus.idBus}. These passengers will be notified: {aux}')
         self.notifyBusLocation(passenger_to_notify,bus)

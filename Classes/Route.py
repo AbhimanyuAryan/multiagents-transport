@@ -21,6 +21,11 @@ class Route:
     def hasStation(self,station : Station):
         ids = [s.idStation for s in self.stations]
         return station.idStation in ids
+    
+    def getIndexStation(self, station : Station):
+        ids = [s.idStation for s in self.stations]
+        return ids.index(station.idStation)
+
 
 def generateRoute() -> Route:
     idRoute = 1
