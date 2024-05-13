@@ -8,6 +8,60 @@
 
 # Agents
 
+## Passenger
+
+The passenger agent symbolizes the passengers who utilize our transportation system.
+
+Therefore, these agents will ride a bus from an initial station to their destination, disembarking upon arrival or when the bus finishes its route. To act effectively, these agents communicate with the manager agent.
+
+These agents are defined by the classes:
+
+- Passenger
+- PassengerAgent
+
+The first class defines the basic structure of a passenger, with attributes that represent them.
+
+```py
+class Passenger:
+    def __init__(...):
+    def to_dict(...):
+    @classmethod
+    def from_dict(...):
+    def __str__(...):
+    def leave_bus(...):
+```
+So, this class allows us to create passengers with the following attributes:
+
+- idPassenger - unique id for each passenger.
+- route - the route the passenger wishes to travel on
+- bus - the bus the passenger is currently on
+- initialStation - the station where the passenger starts on
+
+On the other hand, class PassengerAgent has the following methods:
+
+```py
+class PassengerAgent(Agent):
+    def __init__(...):
+    async def setup(...):
+    def enterBus(...):
+    async def leftBus(...):
+    async def recieveBusLocation(...):
+    async def leaveBus(...):
+    async def receivedMessage(...):
+```
+This class defines passenger agents and relies on the previous class to define the structure of the agent.
+
+The methods showcase the actions performed by these agents, which can be registered on the platform by the manager agent, enter and leave buses and analyze the location of buses. This class also requires a method to receive and process messages sent by the manager.
+
+Utilizing the listed methods, these agents execute the following behaviours:
+
+- `PassengerBehaviour`: initial behaviour responsible for creating the passenger. It is a *CyclicBehaviour* that ensures the passenger awaits messages from the manager.
+
+- `EnterBusBehaviour`: behaviour that represents the act of entering a bus. It is *OneShotBehaviour* that sends a message to the manager informing the change in the system.
+
+- `LeftBusBehaviour`: behaviour that represents the act of leaving a bus. It is a *OneShotBehaviour* that just like the previous one also sends a message to the manager to inform the change in the system.
+
+
 ## Manager
 
 So now we will explain everything related with the manager agent.
