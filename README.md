@@ -12,6 +12,28 @@ It's an effort to create a multi-agent system that simulates a transportation sy
 
 # Agents
 
+## Bus
+
+The bus agent symbolized the buses that transport passengers from one station to another. These agents are defined by the classes:
+
+Attributes of the class Bus:
+
+- idBus: Unique identifier for the bus
+- route: The route assigned to the bus
+- passengers: List of passengers currently on the bus
+- current station: The current station where the bus is located
+- running: Boolean indicating whether the bus is currently running
+  The methods of a bus include the following:
+- add passenger(): Adds a passenger to the bus
+- remove passenger(): Removes a passenger from the bus
+
+Behaviour for the bus agent:
+
+- UpdateBusLocation – Periodic ​
+- NotifyManagerBusStarted – OneShot​
+- CurrentBusLocationUpdate – OneShot​
+- NotifyManagerBusEnd – OneShot
+
 ## Passenger
 
 The passenger agent symbolizes the passengers who utilize our transportation system.
